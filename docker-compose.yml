@@ -13,6 +13,7 @@ web:
         bash -c "npm prune &&
             npm install --no-bin-links &&
             (grunt &) &&
+            (node-inspector --preload false &) &&
             cd app && nodemon --debug --harmony_destructuring -L server.js"
 
 redis:

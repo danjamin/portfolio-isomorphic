@@ -57,14 +57,10 @@ $ docker exec -it portfolio_web_1 bash
 
 ## Debugging server side web
 
-Run `node-inspector` in the web container
-Note: `--preload false` is insanely faster!
-
-```
-$ docker exec -it portfolio_web_1 bash
-# node-inspector --preload false
-```
-
+In dev, `node-inspector` is already running in the web container
 Navigate to remote debugger in chrome `<machine_ip>:8080`
-
 Debug as usual (e.g. visit `<machine_ip>:8001`, set breakpoints, etc.)
+
+**Note**: be sure to remove all breakpoints after debugging, or you will get
+stuck on the next reload of the page -- then you will have to restart the web
+container!
