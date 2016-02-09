@@ -1,0 +1,33 @@
+header,
+footer,
+main {
+    margin: 10px 0;
+}
+
+header,
+footer {
+    font-weight: bold;
+}
+
+section {
+    margin: 10px 0;
+}
+
+.shape {
+    border: 1px solid black;
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+    font-size: 50px;
+    line-height: 100px;
+    text-align: center;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none;     /* Firefox all */
+    -ms-user-select: none;      /* IE 10+ */
+    user-select: none;
+    cursor: pointer;
+}
+
+.square {
+    /* nothing yet */
+}
