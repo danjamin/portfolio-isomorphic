@@ -5,8 +5,8 @@ Portfolio written in isomorphic React
 
 ## One time setup
 
-- Install docker toolbox
 - Install git
+- Install docker toolbox (or docker and docker-compose)
 
 Launch Docker Toolbox
 
@@ -59,7 +59,7 @@ $ docker exec -it portfolio_web_1 bash
 
 In dev, `node-inspector` is already running in the web container
 Navigate to remote debugger in chrome `<machine_ip>:8080`
-Debug as usual (e.g. visit `<machine_ip>:8001`, set breakpoints, etc.)
+Debug as usual (e.g. visit `<machine_ip>:8000`, set breakpoints, etc.)
 
 **Note**: be sure to remove all breakpoints after debugging, or you will get
 stuck on the next reload of the page -- then you will have to restart the web
