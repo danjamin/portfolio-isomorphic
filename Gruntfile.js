@@ -39,12 +39,27 @@ module.exports = function (grunt) {
           }
         }
       }
+    },
+    sass: {
+      dev: {
+        files: {
+          'public/app.css': 'style/app.scss'
+        }
+      }
+    },
+    watch: {
+      scripts: {
+        files: 'style/**/*.scss',
+        tasks: ['sass:dev']
+      }
     }
   })
 
-  // Load the plugin that provides the "browserify" task.
+  // Load plugins
   grunt.loadNpmTasks('grunt-browserify')
+  grunt.loadNpmTasks('grunt-contrib-sass')
+  grunt.loadNpmTasks('grunt-contrib-watch')
 
-  // Default task(s)
-  grunt.registerTask('default', ['browserify:dev'])
+  // Default is run and watch everything BUT browserify
+  grunt.registerTask('default', ['sass:dev', 'watch'])
 }

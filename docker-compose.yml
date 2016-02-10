@@ -1,21 +1,23 @@
 web:
-    restart: always
-    build: .
-    ports:
-        - "8000:8000"
-        - "8080:8080"
-    volumes:
-        - .:/usr/src/app
-    env_file: .env
-    links:
-        - redis
-    command: >
-        bash -c "(grunt &) &&
-            (node-inspector --preload false &) &&
-            cd app && nodemon --debug --harmony_destructuring -L server.js"
+  restart: always
+  build: .
+  ports:
+    - "8000:8000"
+    - "8080:8080"
+  volumes:
+    - .:/usr/src/app
+  env_file: .env
+  links:
+    - redis
+  command: >
+    bash -c "
+      (grunt browserify:dev &) &&
+      (grunt &) &&
+      (node-inspector --preload false &) &&
+      cd app && nodemon --debug --harmony_destructuring -L server.js"
 
 redis:
-    restart: always
-    image: redis:3
-    ports:
-        - "6379"
+  restart: always
+  image: redis:3
+  ports:
+    - "6379"
