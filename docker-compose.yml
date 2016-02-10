@@ -11,9 +11,12 @@ web:
     - redis
   command: >
     bash -c "
+      ulimit -s 65500 &&
+      npm install --no-bin-links &&
       (grunt browserify:dev &) &&
       (grunt &) &&
       (node-inspector --preload false &) &&
+      grunt browserify:vendor &&
       cd app && nodemon --debug --harmony_destructuring -L server.js"
 
 redis:
