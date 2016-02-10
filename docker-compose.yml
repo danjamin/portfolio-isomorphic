@@ -10,9 +10,7 @@ web:
     links:
         - redis
     command: >
-        bash -c "npm prune &&
-            npm install --no-bin-links &&
-            (grunt &) &&
+        bash -c "(grunt &) &&
             (node-inspector --preload false &) &&
             cd app && nodemon --debug --harmony_destructuring -L server.js"
 
