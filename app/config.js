@@ -1,5 +1,5 @@
 module.exports = {
-  modules: ['index'],
+  modules: ['index', 'experience'],
   apis: [],
   helpers: ['cdn', 'json']
 }

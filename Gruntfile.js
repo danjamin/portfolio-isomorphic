@@ -4,7 +4,7 @@ var config = require('./app/config')
 
 module.exports = function (grunt) {
   // setup "external" deps
-  var external = ['react', 'react-dom', 'jquery']
+  var external = ['react', 'react-dom', 'jquery', 'underscore']
 
   // setup css
   var css_output = 'public/main.css'
