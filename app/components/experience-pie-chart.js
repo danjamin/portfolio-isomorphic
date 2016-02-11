@@ -3,7 +3,7 @@
 var React = require('react'),
   {Pie} = require('react-chartjs')
 
-var {div, a, p} = React.DOM,
+var {div, a, p, i} = React.DOM,
   pie = React.createFactory(Pie)
 
 var colors = [
@@ -58,7 +58,10 @@ class ExperiencePieChart extends React.Component {
         { style: {marginBottom: 20} },
         a(
           { onClick: this.props.onBackClick },
-          '<- Previous'
+          i(
+            {className: "fa fa-lg fa-chevron-left"}
+          ),
+          ' Back'
         )
       )
     }
