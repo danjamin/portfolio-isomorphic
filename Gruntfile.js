@@ -72,6 +72,12 @@ module.exports = function (grunt) {
           src: './static',
           dest: './public'
         }
+      },
+      robots: {
+        options: {
+          src: 'robots.txt',
+          dest: './public'
+        }
       }
     },
     watch: {
@@ -83,6 +89,9 @@ module.exports = function (grunt) {
         files: 'static/**/*.*',
         tasks: ['rsync:static']
       },
+      robots: {
+        files: 'robots.txt',
+        tasks: ['rsync:robots']
       }
     }
   })
@@ -96,6 +105,6 @@ module.exports = function (grunt) {
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
-    'sass:dev', 'postcss:dev', 'rsync:static', 'watch'
+    'sass:dev', 'postcss:dev', 'rsync:static', 'rsync:robots', 'watch'
   ])
 }
