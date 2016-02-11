@@ -6,6 +6,9 @@ module.exports = function (grunt) {
   // setup "external" deps
   var external = ['react', 'react-dom', 'jquery']
 
+  // setup css
+  var css_output = 'public/app.css'
+
   // generate files from modules array
   var browserify_files = {}
 
@@ -43,14 +46,25 @@ module.exports = function (grunt) {
     sass: {
       dev: {
         files: {
-          'public/app.css': 'style/app.scss'
+          [css_output]: 'style/app.scss'
         }
+      }
+    },
+    postcss: {
+      options: {
+        map: true,
+        processors: [
+          require('autoprefixer')({browsers: 'last 2 versions'})
+        ]
+      },
+      dev: {
+        src: css_output
       }
     },
     watch: {
       scripts: {
         files: 'style/**/*.scss',
-        tasks: ['sass:dev']
+        tasks: ['sass:dev', 'postcss:dev']
       }
     }
   })
@@ -58,8 +72,9 @@ module.exports = function (grunt) {
   // Load plugins
   grunt.loadNpmTasks('grunt-browserify')
   grunt.loadNpmTasks('grunt-contrib-sass')
+  grunt.loadNpmTasks('grunt-postcss')
   grunt.loadNpmTasks('grunt-contrib-watch')
 
   // Default is run and watch everything BUT browserify
-  grunt.registerTask('default', ['sass:dev', 'watch'])
+  grunt.registerTask('default', ['sass:dev', 'postcss:dev', 'watch'])
 }
