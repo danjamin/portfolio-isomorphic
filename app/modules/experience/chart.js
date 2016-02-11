@@ -3,6 +3,7 @@ exports.data = [
     value: 6.5, label: "JavaScript",
     children: [
       {value: 6.5, label: "jQuery"},
+      {value: 2.0, label: "Node.js"},
       {value: 2.0, label: "Ember"},
       {value: 1.5, label: "React"},
       {value: 0.5, label: "Angular JS"},
