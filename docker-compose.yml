@@ -7,8 +7,6 @@ web:
   volumes:
     - .:/usr/src/app
   env_file: .env
-  links:
-    - redis
   command: >
     bash -c "
       ulimit -s 65500 &&
@@ -18,9 +16,3 @@ web:
       (node-inspector --preload false &) &&
       grunt browserify:vendor &&
       cd app && nodemon --debug --harmony_destructuring -L server.js"
-
-redis:
-  restart: always
-  image: redis:3
-  ports:
-    - "6379"

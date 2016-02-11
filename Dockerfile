@@ -1,9 +1,9 @@
 FROM node:5.5
 
-# Install Ruby.
+# Install Ruby and rsync
 RUN \
   apt-get update && \
-  apt-get install -y ruby
+  apt-get install -y ruby rsync
 
 # Install sass gem
 RUN gem install --no-ri --no-rdoc sass

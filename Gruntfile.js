@@ -7,7 +7,7 @@ module.exports = function (grunt) {
   var external = ['react', 'react-dom', 'jquery']
 
   // setup css
-  var css_output = 'public/app.css'
+  var css_output = 'public/main.css'
 
   // generate files from modules array
   var browserify_files = {}
@@ -46,7 +46,7 @@ module.exports = function (grunt) {
     sass: {
       dev: {
         files: {
-          [css_output]: 'style/app.scss'
+          [css_output]: 'style/main.scss'
         }
       }
     },
@@ -61,10 +61,27 @@ module.exports = function (grunt) {
         src: css_output
       }
     },
+    rsync: {
+      options: {
+        args: ["--verbose"],
+        exclude: [".git*"],
+        recursive: true
+      },
+      assets: {
+        options: {
+          src: './assets',
+          dest: './public'
+        }
+      }
+    },
     watch: {
-      scripts: {
+      style: {
         files: 'style/**/*.scss',
         tasks: ['sass:dev', 'postcss:dev']
+      },
+      assets: {
+        files: 'assets/**/*.*',
+        tasks: ['rsync:assets']
       }
     }
   })
@@ -74,7 +91,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-sass')
   grunt.loadNpmTasks('grunt-postcss')
   grunt.loadNpmTasks('grunt-contrib-watch')
+  grunt.loadNpmTasks('grunt-rsync')
 
   // Default is run and watch everything BUT browserify
-  grunt.registerTask('default', ['sass:dev', 'postcss:dev', 'watch'])
+  grunt.registerTask('default', [
+    'sass:dev', 'postcss:dev', 'rsync:assets', 'watch'
+  ])
 }

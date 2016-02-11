@@ -1,5 +1,5 @@
 module.exports = {
-  modules: ['index', 'square'],
-  apis: ['square'],
+  modules: ['index'],
+  apis: [],
   helpers: ['cdn', 'json']
 }
