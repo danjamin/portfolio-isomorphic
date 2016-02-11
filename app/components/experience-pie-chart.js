@@ -85,7 +85,6 @@ class ExperiencePieChart extends React.Component {
 
 ExperiencePieChart.propTypes = {
   data: React.PropTypes.array.isRequired,
-  isNested: React.PropTypes.boolean,
   onClick: React.PropTypes.func
 }
 ExperiencePieChart.defaultProps = {
