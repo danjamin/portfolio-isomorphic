@@ -7,11 +7,12 @@ var {div, a, p} = React.DOM,
   pie = React.createFactory(Pie)
 
 var colors = [
-  { color: "#F7464A", highlight: "#FF5A5E" }, // red
-  { color: "#46BFBD", highlight: "#5AD3D1" }, // green
-  { color: "#FDB45C", highlight: "#FFC870" }, // yellow
-  { color: "#949FB1", highlight: "#A8B3C5" }, // gray
-  { color: "#4D5360", highlight: "#616774" }, // dark gray
+  { color: "#7cb5ec", highlight: "#a9cef2" }, // blue
+  { color: "#4d5360", highlight: "#646b7c" }, // dark gray
+  { color: "#fdb45c", highlight: "#fecb8e" }, // yellow
+  { color: "#90ed7d", highlight: "#b6f3aa" }, // green
+  { color: "#949fb1", highlight: "#b1b9c7" }, // gray
+  { color: "#f7464a", highlight: "#f9777a" }, // red
 ]
 
 var options = {
