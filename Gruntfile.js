@@ -67,9 +67,9 @@ module.exports = function (grunt) {
         exclude: [".git*"],
         recursive: true
       },
-      assets: {
+      static: {
         options: {
-          src: './assets',
+          src: './static',
           dest: './public'
         }
       }
@@ -79,9 +79,10 @@ module.exports = function (grunt) {
         files: 'style/**/*.scss',
         tasks: ['sass:dev', 'postcss:dev']
       },
-      assets: {
-        files: 'assets/**/*.*',
-        tasks: ['rsync:assets']
+      static: {
+        files: 'static/**/*.*',
+        tasks: ['rsync:static']
+      },
       }
     }
   })
@@ -95,6 +96,6 @@ module.exports = function (grunt) {
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
-    'sass:dev', 'postcss:dev', 'rsync:assets', 'watch'
+    'sass:dev', 'postcss:dev', 'rsync:static', 'watch'
   ])
 }
