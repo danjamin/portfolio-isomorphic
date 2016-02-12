@@ -26,8 +26,8 @@ var chartRef
 var _afterRender = function () {
   // get the canvas from the pie ref and set the onclick
   // to the handleClick function
-  this.pie.getCanvass().onclick = this.handleClick.bind(this)
-  chartRef = this.pie.getChart()
+  this.pieRef.getCanvass().onclick = this.handleClick.bind(this)
+  chartRef = this.pieRef.getChart()
 }
 
 class ExperiencePieChart extends React.Component {
@@ -39,7 +39,6 @@ class ExperiencePieChart extends React.Component {
     _afterRender.call(this)
   }
 
-  // TODO: better way?
   componentDidUpdate() {
     _afterRender.call(this)
   }
@@ -70,7 +69,7 @@ class ExperiencePieChart extends React.Component {
       {},
       back_button,
       pie(
-        { ref: (ref) => {this.pie = ref}, data: data, options: options,
+        { ref: (ref) => {this.pieRef = ref}, data: data, options: options,
           redraw: true, maxWidth: 400, maxHeight: 400 }
       )
     )
