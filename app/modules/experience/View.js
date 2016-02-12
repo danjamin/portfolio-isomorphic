@@ -1,6 +1,7 @@
 "use strict"
 
-var React = require('react')
+var React = require('react'),
+  isServer = require('../../../lib/isServer')
 
 var ExperiencePieChart = require('../../components/ExperiencePieChart'),
   BreadCrumbs = require('../../components/BreadCrumbs'),
@@ -22,7 +23,7 @@ function getStateFromStores() {
 class View extends React.Component {
   constructor(props) {
     super(props)
-    this.state = getStateFromStores()
+    this.state = isServer() ? props : getStateFromStores()
   }
 
   componentWillMount() {
@@ -55,6 +56,10 @@ class View extends React.Component {
   onChange() {
     this.setState(getStateFromStores())
   }
+}
+
+View.defaultProps = {
+  path: []
 }
 
 module.exports = View

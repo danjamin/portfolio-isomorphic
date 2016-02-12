@@ -1,8 +1,7 @@
 var ReactDOMServer = require('react-dom/server'),
   React = require('react')
 
-var ExperienceStore = require('./ExperienceStore'),
-  View = require('./View'),
+var View = require('./View'),
   actionTypes = require('./actionTypes'),
   chartData = require('./chartData')
 
@@ -12,11 +11,8 @@ module.exports = function (app) {
   app.get('/experience', function (req, res) {
     var html
 
-    // Notify store to receive raw model data
-    ExperienceStore.notify(actionTypes.RECEIVE_RAW_MODEL, { rawModel: chartData })
-
     // Render top level component
-    html = ReactDOMServer.renderToString(view())
+    html = ReactDOMServer.renderToString(view({ data: chartData }))
 
     res.render('experience/index', {
       outlet: {
