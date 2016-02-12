@@ -2,6 +2,7 @@
 
 var config = require('./app/config')
 var _ = require('underscore')
+var fs = require('fs')
 
 module.exports = function (grunt) {
   // setup "external" deps
@@ -115,12 +116,12 @@ module.exports = function (grunt) {
           dest: './public'
         }
       },
-      robots: {
-        options: {
-          src: 'robots.txt',
-          dest: './public'
-        }
-      }
+    },
+    filerev: {
+      options: {},
+      public: {
+        src: 'public/**/*.{css,js,pdf,png,ico}',
+      },
     },
     watch: {
       style: {
@@ -131,11 +132,23 @@ module.exports = function (grunt) {
         files: 'static/**/*.*',
         tasks: ['rsync:static']
       },
-      robots: {
-        files: 'robots.txt',
-        tasks: ['rsync:robots']
-      }
-    }
+    },
+    s3: {
+      options: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+        bucket: process.env.S3_BUCKET,
+        region: process.env.S3_REGION,
+        headers: {
+          CacheControl: 31536000 /* 1yr */
+        }
+      },
+      deploy: {
+        cwd: 'public',
+        src: '**'
+      },
+    },
+    clean: ['public/**/*']
   })
 
   // Load plugins
@@ -144,15 +157,27 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-postcss')
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-rsync')
+  grunt.loadNpmTasks('grunt-filerev')
+  grunt.loadNpmTasks('grunt-contrib-clean')
+  grunt.loadNpmTasks('grunt-aws')
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
-    'sass:dist', 'postcss:dev', 'rsync:static', 'rsync:robots', 'watch'
+    'sass:dist', 'postcss:dev', 'rsync:static', 'watch'
   ])
+
+  // TODO: break this out better
+  grunt.registerTask('write_filerev', function() {
+    var finalPaths = {}
+    for (var orig in grunt.filerev.summary) {
+      finalPaths[orig.substring(6)] = grunt.filerev.summary[orig].substring(6)
+    }
+    fs.writeFileSync('public/assetMap.json', JSON.stringify(finalPaths))
+  })
 
   // Build for production
   grunt.registerTask('production', [
-    'sass:dist', 'postcss:prod', 'rsync:static', 'rsync:robots',
-    'browserify:vendor_prod', 'browserify:prod'
+    'clean', 'sass:dist', 'postcss:prod', 'rsync:static',
+    'browserify:vendor_prod', 'browserify:prod', 'filerev', 'write_filerev'
   ])
 }
