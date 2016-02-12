@@ -1,6 +1,7 @@
 "use strict"
 
 var config = require('./app/config')
+var _ = require('underscore')
 
 module.exports = function (grunt) {
   // setup "external" deps
@@ -8,6 +9,43 @@ module.exports = function (grunt) {
 
   // setup css
   var css_output = 'public/main.css'
+
+  var browserify_options_dev =  {
+    transform: [ ['babelify', {presets: ['es2015']}] ],
+    watch: true,
+    keepAlive: true,
+    external: external,
+    browserifyOptions: {
+      debug: true,
+      extensions: '.js'
+    },
+    watchifyOptions: {
+      poll: 100,
+      debug: true
+    }
+  }
+
+  // extend dev options
+  var browserify_options_prod = {}
+  _.extend(browserify_options_prod, browserify_options_dev, {
+    watch: false,
+    keepAlive: false,
+    browserifyOptions: {
+      debug: false
+    },
+    watchifyOptions: {}
+  })
+  // uglify prod build
+  browserify_options_prod.transform.push('uglifyify')
+
+  // vendor browserify options
+  var browserify_options_vendor_dev = {
+    require: external
+  }
+  var browserify_options_vendor_prod = {}
+  _.extend(browserify_options_vendor_prod, browserify_options_vendor_dev, {
+    transform: ['uglifyify']
+  })
 
   // generate files from modules array
   var browserify_files = {}
@@ -17,34 +55,31 @@ module.exports = function (grunt) {
       [`app/modules/${module}/client.js`]
   }
 
+  var browserify_vendor_files = { 'public/vendor.js': external }
+
   // Project configuration
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     browserify: {
-      vendor: {
-        files: { 'public/vendor.js': external },
-        options: { require: external }
+      vendor_dev: {
+        files: browserify_vendor_files,
+        options: browserify_options_vendor_dev
+      },
+      vendor_prod: {
+        files: browserify_vendor_files,
+        options: browserify_options_vendor_prod
       },
       dev: {
         files: browserify_files,
-        options: {
-          transform: [ ['babelify', {presets: ['es2015']}] ],
-          watch: true,
-          keepAlive: true,
-          external: external,
-          browserifyOptions: {
-            debug: true,
-            extensions: '.js'
-          },
-          watchifyOptions: {
-            poll: 100,
-            debug: true
-          }
-        }
+        options: browserify_options_dev
+      },
+      prod: {
+        files: browserify_files,
+        options: browserify_options_prod
       }
     },
     sass: {
-      dev: {
+      dist: {
         files: {
           [css_output]: 'style/main.scss'
         }
@@ -54,12 +89,19 @@ module.exports = function (grunt) {
       options: {
         map: true,
         processors: [
-          require('autoprefixer')({browsers: 'last 2 versions'})
+          require('autoprefixer')({browsers: 'last 2 versions'}),
+          require('cssnano')(),
         ]
       },
       dev: {
-        src: css_output
-      }
+        src: css_output,
+      },
+      prod: {
+        src: css_output,
+        options: {
+          map: false
+        },
+      },
     },
     rsync: {
       options: {
@@ -83,7 +125,7 @@ module.exports = function (grunt) {
     watch: {
       style: {
         files: 'style/**/*.scss',
-        tasks: ['sass:dev', 'postcss:dev']
+        tasks: ['sass:dist', 'postcss:dev']
       },
       static: {
         files: 'static/**/*.*',
@@ -105,6 +147,12 @@ module.exports = function (grunt) {
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
-    'sass:dev', 'postcss:dev', 'rsync:static', 'rsync:robots', 'watch'
+    'sass:dist', 'postcss:dev', 'rsync:static', 'rsync:robots', 'watch'
+  ])
+
+  // Build for production
+  grunt.registerTask('production', [
+    'sass:dist', 'postcss:prod', 'rsync:static', 'rsync:robots',
+    'browserify:vendor_prod', 'browserify:prod'
   ])
 }

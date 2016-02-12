@@ -14,5 +14,5 @@ web:
       (grunt browserify:dev &) ;
       (grunt &) ;
       (node-inspector --preload false &) ;
-      ([ ! -f ./public/vendor.js ] && grunt browserify:vendor) ;
+      ([ ! -f ./public/vendor.js ] && grunt browserify:vendor_dev) ;
       cd app && nodemon --debug --harmony_destructuring -L server.js"
