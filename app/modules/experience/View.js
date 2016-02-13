@@ -5,6 +5,7 @@ var React = require('react')
 var ExperiencePieChart = require('../../components/ExperiencePieChart'),
   BreadCrumbs = require('../../components/BreadCrumbs'),
   ExperienceStore = require('./ExperienceStore'),
+  dispatcher = require('./dispatcher'),
   actionTypes = require('./actionTypes')
 
 var {div} = React.DOM
@@ -45,11 +46,14 @@ class View extends React.Component {
   }
 
   handleClick(entry) {
-    ExperienceStore.notify(actionTypes.NEXT, { entry: entry })
+    dispatcher.dispatch({
+      actionType: actionTypes.NEXT,
+      entry: entry
+    })
   }
 
   onBackClick() {
-    ExperienceStore.notify(actionTypes.PREVIOUS, {})
+    dispatcher.dispatch({ actionType: actionTypes.PREVIOUS })
   }
 
   onChange() {

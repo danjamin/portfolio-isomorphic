@@ -3,6 +3,7 @@
 var _ = require('underscore')
 
 var actionTypes = require('./actionTypes'),
+  dispatcher = require('./dispatcher'),
   Store = require('../../../lib/Store')
 
 var model = []
@@ -56,29 +57,29 @@ class ExperienceStore extends Store {
   static getPath() {
     return path
   }
-
-  static notify(type, data) {
-    switch (type) {
-      case actionTypes.RESET:
-        reset()
-        break
-      case actionTypes.RECEIVE_RAW_MODEL:
-        model = data.rawModel
-        super.emitChange()
-        break
-      case actionTypes.NEXT:
-        if (pathExists(data.entry)) {
-          pushPath(data.entry)
-          super.emitChange()
-        }
-        break
-      case actionTypes.PREVIOUS:
-        if (popPath()) {
-          super.emitChange()
-        }
-        break;
-    }
-  }
 }
+
+ExperienceStore.dispatchToken = dispatcher.register(payload => {
+  switch (payload.actionType) {
+    case actionTypes.RESET:
+      reset()
+      break
+    case actionTypes.RECEIVE_RAW_MODEL:
+      model = payload.rawModel
+      ExperienceStore.emitChange()
+      break
+    case actionTypes.NEXT:
+      if (pathExists(payload.entry)) {
+        pushPath(payload.entry)
+        ExperienceStore.emitChange()
+      }
+      break
+    case actionTypes.PREVIOUS:
+      if (popPath()) {
+        ExperienceStore.emitChange()
+      }
+      break
+  }
+})
 
 module.exports = ExperienceStore

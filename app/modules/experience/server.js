@@ -1,8 +1,8 @@
 var ReactDOMServer = require('react-dom/server'),
   React = require('react')
 
-var ExperienceStore = require('./ExperienceStore'),
-  View = require('./View'),
+var View = require('./View'),
+  dispatcher = require('./dispatcher'),
   actionTypes = require('./actionTypes'),
   chartData = require('./chartData')
 
@@ -13,13 +13,16 @@ module.exports = function (app) {
     var html
 
     // Notify store to receive raw model data
-    ExperienceStore.notify(actionTypes.RECEIVE_RAW_MODEL, { rawModel: chartData })
+    dispatcher.dispatch({
+      actionType: actionTypes.RECEIVE_RAW_MODEL,
+      rawModel: chartData
+    })
 
     // Render top level component
     html = ReactDOMServer.renderToString(view())
 
     // Need to make sure we clear out the store .. just in case
-    ExperienceStore.notify(actionTypes.RESET)
+    dispatcher.dispatch({ actionType: actionTypes.RESET })
 
     res.render('experience/index', {
       outlet: {
