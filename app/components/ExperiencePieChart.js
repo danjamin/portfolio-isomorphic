@@ -17,7 +17,7 @@ var colors = [
 
 var options = {
   percentageInnerCutout : 5,
-  animationSteps: 50,
+  animationSteps: 30,
   responsive: true
 }
 
