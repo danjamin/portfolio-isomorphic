@@ -8,6 +8,11 @@ var actionTypes = require('./actionTypes'),
 var model = []
 var path = []
 
+function reset() {
+  model = []
+  path = []
+}
+
 function pathExists(entry) {
   var dataSet
 
@@ -54,6 +59,9 @@ class ExperienceStore extends Store {
 
   static notify(type, data) {
     switch (type) {
+      case actionTypes.RESET:
+        reset()
+        break
       case actionTypes.RECEIVE_RAW_MODEL:
         model = data.rawModel
         super.emitChange()
