@@ -1,6 +1,6 @@
 web:
   restart: always
-  build: .
+  image: "danjamin/portfolio-isomorphic-web:latest"
   ports:
     - "8000:8000"
     - "8080:8080"
@@ -15,4 +15,4 @@ web:
       (grunt &) ;
       (node-inspector --preload false &) ;
       ([ ! -f ./public/vendor.js ] && grunt browserify:vendor_dev) ;
-      cd app && nodemon --debug --harmony_destructuring -L server.js"
+      nodemon --debug --harmony_destructuring -L server.js"

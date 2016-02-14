@@ -64,3 +64,25 @@ Debug as usual (e.g. visit `<machine_ip>:8000`, set breakpoints, etc.)
 **Note**: be sure to remove all breakpoints after debugging, or you will get
 stuck on the next reload of the page -- then you will have to restart the web
 container!
+
+## Deploying to AWS
+
+Get AWS setup see [AWS Example](https://docs.docker.com/machine/examples/aws/)
+and the `docker-machine` created.
+
+Be sure port 80 is open on your EC2 instance.
+
+```
+$ eval $(docker-machine env aws-sandbox)
+$ docker run --name web -d -p 80:8000 danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
+$ docker exec web bash -c "\
+cd ../builds && \
+rm -Rf master && \
+git clone https://github.com/danjamin/portfolio-isomorphic.git master && \
+cd master && \
+git checkout master && \
+npm i --production && \
+rm -Rf /usr/src/app && \
+ln -s /usr/src/builds/master /usr/src/app"
+$ docker restart web
+```
