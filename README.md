@@ -65,6 +65,40 @@ Debug as usual (e.g. visit `<machine_ip>:8000`, set breakpoints, etc.)
 stuck on the next reload of the page -- then you will have to restart the web
 container!
 
+## Deploying to cloud front
+
+Setup an S3 bucket then setup cloud front with the origin set to your bucket
+
+### Get a reusable environment set up
+
+```
+$ cd ..
+$ git clone https://github.com/danjamin/portfolio-isomorphic.git portfolio-isomorphic-deploy-to-cdn
+$ cd !$
+$ git checkout master
+```
+
+### Get the container running with the correct ENV
+
+```
+$ docker run -d --name deploy-to-cdn -v $(pwd):/usr/src/app \
+--env CDN_HOST=foo123.cloudfront.net \
+--env S3_BUCKET=bucket \
+--env S3_REGION=us-west-1 \
+--env S3_ACCESS_KEY_ID=id \
+--env S3_SECRET_ACCESS_KEY=secret \
+danjamin/portfolio-isomorphic-web tail -f
+```
+
+### Install deps, build, and deploy
+
+```
+$ docker exec deploy-to-cdn npm install
+$ docker exec deploy-to-cdn npm prune
+$ docker exec deploy-to-cdn grunt production
+$ docker exec deploy-to-cdn grunt s3:deploy
+```
+
 ## Deploying to AWS
 
 Get AWS setup see [AWS Example](https://docs.docker.com/machine/examples/aws/)
@@ -72,9 +106,20 @@ and the `docker-machine` created.
 
 Be sure port 80 is open on your EC2 instance.
 
+### Get the container running
+
 ```
 $ eval $(docker-machine env aws-sandbox)
-$ docker run --name web -d -p 80:8000 danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
+$ docker run --name web -d -p 80:8000 \
+--env NODE_ENV=production \
+--env PORT=8000 \
+--env CDN_HOST=foo123.cloudfront.net \
+danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
+```
+
+### Deploy the newest version
+
+```
 $ docker exec web bash -c "\
 cd ../builds && \
 rm -Rf master && \
@@ -84,5 +129,10 @@ git checkout master && \
 npm i --production && \
 rm -Rf /usr/src/app && \
 ln -s /usr/src/builds/master /usr/src/app"
+```
+
+### Restart the container
+
+```
 $ docker restart web
 ```

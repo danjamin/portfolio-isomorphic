@@ -9,6 +9,10 @@ var express = require('express'),
 
 var {modules, apis, helpers} = require(`./${appDir}/config`)
 
+function is_staging_env() {
+  return process.env.NODE_ENV !== 'production'
+}
+
 function serve_path(app, relative_path) {
   var dir = path.join(__dirname, relative_path)
   app.use(express.static(dir))
@@ -59,7 +63,15 @@ function listen(app, port) {
 }
 
 app = express()
-serve_path(app, './public')
+
+// serve robots in all environments
+serve_path(app, '/robots')
+
+// in non-prod serve public
+if (is_staging_env()) {
+  serve_path(app, '/public')
+}
+
 setup_views(app, '.hbs')
 setup_body_parser(app)
 bind_routes(app)
