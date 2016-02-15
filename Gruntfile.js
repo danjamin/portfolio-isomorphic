@@ -193,7 +193,7 @@ module.exports = function (grunt) {
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
-    'clean:dev', 'sass:dev', 'postcss:dev', 'rsync:dev', 'watch'
+    'sass:dev', 'postcss:dev', 'rsync:dev', 'watch'
   ])
 
   // TODO: break this out better
