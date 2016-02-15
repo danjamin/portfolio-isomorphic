@@ -102,6 +102,7 @@ Be sure port 80 is open on your EC2 instance.
 ```
 $ eval $(docker-machine env aws-sandbox)
 $ docker run --name web -d -p 80:8000 \
+-w /usr/src/app \
 --env NODE_ENV=production \
 --env PORT=8000 \
 --env CDN_HOST=foo123.cloudfront.net \
