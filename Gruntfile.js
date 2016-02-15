@@ -197,7 +197,7 @@ module.exports = function (grunt) {
   ])
 
   // TODO: break this out better
-  grunt.registerTask('write_filerev', function() {
+  grunt.registerTask('write_filerev', () => {
     var finalPaths = {}
     var substrIndex = prod_dest.length
     for (var orig in grunt.filerev.summary) {
@@ -206,9 +206,27 @@ module.exports = function (grunt) {
     fs.writeFileSync(`${prod_dest}/${asset_map_dest}`, JSON.stringify(finalPaths))
   })
 
+  // TODO: break this better
+  grunt.registerTask('filerev_apply', () => {
+    var fs = require('fs'),
+      substrIndex = prod_dest.length,
+      cssFile = grunt.filerev.summary[`${prod_dest}/main.css`],
+      content = fs.readFileSync(cssFile, "utf8"),
+      prefix = process.env.CDN_ROOT ? '//' + process.env.CDN_ROOT : ''
+
+    content = content.replace(/url\(["']?([\w\@\.\-\/]+)["']?\)/gi, (match, p1) => {
+      var rev_file = prefix + grunt.filerev.summary[`${prod_dest}${p1}`].substring(substrIndex)
+      console.log(`Replaced ${p1} with ${rev_file}`)
+      return `url(${rev_file})`
+    })
+
+    fs.writeFileSync(cssFile, content)
+  })
+
   // Build for production
   grunt.registerTask('production', [
     'clean:prod', 'sass:prod', 'postcss:prod', 'rsync:prod',
-    'browserify:vendor_prod', 'browserify:prod', 'filerev:prod', 'write_filerev'
+    'browserify:vendor_prod', 'browserify:prod', 'filerev:prod', 'filerev_apply',
+    'write_filerev'
   ])
 }
