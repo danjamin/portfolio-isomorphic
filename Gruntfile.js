@@ -212,7 +212,7 @@ module.exports = function (grunt) {
       substrIndex = prod_dest.length,
       cssFile = grunt.filerev.summary[`${prod_dest}/main.css`],
       content = fs.readFileSync(cssFile, "utf8"),
-      prefix = process.env.CDN_ROOT ? '//' + process.env.CDN_ROOT : ''
+      prefix = process.env.CDN_HOST ? '//' + process.env.CDN_HOST : ''
 
     content = content.replace(/url\(["']?([\w\@\.\-\/]+)["']?\)/gi, (match, p1) => {
       var rev_file = prefix + grunt.filerev.summary[`${prod_dest}${p1}`].substring(substrIndex)
