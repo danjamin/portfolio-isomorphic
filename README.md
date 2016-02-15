@@ -69,15 +69,6 @@ container!
 
 Setup an S3 bucket then setup cloud front with the origin set to your bucket
 
-### Get a reusable environment set up
-
-```
-$ cd ..
-$ git clone https://github.com/danjamin/portfolio-isomorphic.git portfolio-isomorphic-deploy-to-cdn
-$ cd !$
-$ git checkout master
-```
-
 ### Get the container running with the correct ENV
 
 ```
@@ -96,7 +87,7 @@ danjamin/portfolio-isomorphic-web tail -f
 $ docker exec deploy-to-cdn npm install
 $ docker exec deploy-to-cdn npm prune
 $ docker exec deploy-to-cdn grunt production
-$ docker exec deploy-to-cdn grunt s3:deploy
+$ docker exec deploy-to-cdn grunt s3:prod
 ```
 
 ## Deploying to AWS
