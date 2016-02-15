@@ -1,19 +1,28 @@
-var http = require('http')
+var http = require('http'),
+  zlib = require('zlib')
 
 var assetMap = {}
 var host = process.env.CDN_HOST ? process.env.CDN_HOST : ''
 
 !function init() {
   if (host) {
-    http.request({host: host, path: '/assetMap.json'}, res => {
-      var str = ''
-      res.on('data', function (chunk) {
-        str += chunk;
-      })
-      res.on('end', function () {
-        assetMap = JSON.parse(str)
-      })
-    }).end()
+    http.get({
+      host: host,
+      path: '/assetMap.json',
+      headers: { 'accept-encoding': 'gzip' }
+    }).on('response', response => {
+      var data = ''
+
+      switch (response.headers['content-encoding']) {
+        case 'gzip':
+          response = response.pipe(zlib.createGunzip())
+          break
+      }
+
+      response
+        .on('data', chunk => data += chunk)
+        .on('end', () => assetMap = JSON.parse(data))
+    })
   }
 }()
 
