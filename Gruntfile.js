@@ -51,7 +51,7 @@ module.exports = function (grunt) {
     watchifyOptions: {}
   })
   // uglify prod build
-  browserify_options_prod.transform.push('uglifyify')
+  browserify_options_prod.transform.push(['uglifyify', {global: true}])
 
   // vendor browserify options
   browserify_options_vendor_dev = {
@@ -59,7 +59,7 @@ module.exports = function (grunt) {
   }
   browserify_options_vendor_prod = {}
   _.extend(browserify_options_vendor_prod, browserify_options_vendor_dev, {
-    transform: ['uglifyify']
+    transform: [['uglifyify', {global: true}]]
   })
 
   // generate files from modules array
