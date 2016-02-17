@@ -103,6 +103,19 @@ Be sure port 80 is open on your EC2 instance.
 $ eval $(docker-machine env aws-sandbox)
 ```
 
+### Get web_1 running
+
+```
+$ docker run --name web_1 -d \
+-w /usr/src/app \
+--env NODE_ENV=production \
+--env PORT=8000 \
+--env CDN_HOST=foo123.cloudfront.net \
+danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
+```
+
+### Repeat for web_2
+
 ### Get nginx up
 
 ```
@@ -113,17 +126,6 @@ nginx:1.9
 $ docker cp nginx/nginx.conf nginx:/etc/nginx/nginx.conf
 $ docker cp nginx/upstream.conf nginx:/etc/nginx/conf.d/upstream.conf
 $ docker restart nginx
-```
-
-### Get web_1 running
-
-```
-$ docker run --name web_1 -d \
--w /usr/src/app \
---env NODE_ENV=production \
---env PORT=8000 \
---env CDN_HOST=foo123.cloudfront.net \
-danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
 ```
 
 ### Deploy the newest version to web_1
@@ -140,13 +142,10 @@ rm -Rf /usr/src/app && \
 ln -s /usr/src/builds/master /usr/src/app"
 ```
 
-### Restart web_1
-
-```
-$ docker restart web_1
-```
-
 ### Repeat for web_2
 
-Repeat for `web_2` (replace `web_1` with `web_2`) from "Get web_1 running" to
-"Restart web_1"
+### Restart web containers
+
+```
+$ docker restart web_1 web_2
+```
