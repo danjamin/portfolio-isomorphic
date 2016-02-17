@@ -1,8 +1,18 @@
-web:
+nginx:
+  restart: always
+  image: nginx:1.9
+  ports:
+    - "80:80"
+  volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./nginx/upstream-dev.conf:/etc/nginx/conf.d/upstream.conf
+  links:
+    - web_1
+
+web_1:
   restart: always
   image: "danjamin/portfolio-isomorphic-web:latest"
   ports:
-    - "8000:8000"
     - "8080:8080"
   volumes:
     - .:/usr/src/app

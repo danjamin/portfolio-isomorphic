@@ -1,4 +1,4 @@
-# portfolio
+# portfolio-isomorphic
 
 Portfolio written in isomorphic React
 
@@ -34,7 +34,7 @@ Figure out machine IP (Windows/OS X only) -- linux can use localhost:
 $ docker-machine ip default
 ```
 
-Visit dev site at `<machine_ip>:8000`
+Visit dev site at `<machine_ip>`
 
 
 ## Watchers / Change, reload page
@@ -51,7 +51,7 @@ Every once in a while, an external dependency will need updating locally.
 To generate `public/vendor.js`
 
 ```
-$ docker exec -it portfolio_web_1 bash
+$ docker exec -it <web_container_id> bash
 # grunt browserify:vendor_dev
 ```
 
@@ -59,7 +59,7 @@ $ docker exec -it portfolio_web_1 bash
 
 In dev, `node-inspector` is already running in the web container
 Navigate to remote debugger in chrome `<machine_ip>:8080`
-Debug as usual (e.g. visit `<machine_ip>:8000`, set breakpoints, etc.)
+Debug as usual (e.g. visit `<machine_ip>`, set breakpoints, etc.)
 
 **Note**: be sure to remove all breakpoints after debugging, or you will get
 stuck on the next reload of the page -- then you will have to restart the web
@@ -97,11 +97,28 @@ and the `docker-machine` created.
 
 Be sure port 80 is open on your EC2 instance.
 
-### Get the container running
+### Make sure we are on the right docker machine
 
 ```
 $ eval $(docker-machine env aws-sandbox)
-$ docker run --name web -d -p 80:8000 \
+```
+
+### Get nginx up
+
+```
+$ docker run --name nginx -d -p 80:80 \
+--link web_1:web_1 \
+--link web_2:web_2 \
+nginx:1.9
+$ docker cp nginx/nginx.conf nginx:/etc/nginx/nginx.conf
+$ docker cp nginx/upstream.conf nginx:/etc/nginx/conf.d/upstream.conf
+$ docker restart nginx
+```
+
+### Get web_1 running
+
+```
+$ docker run --name web_1 -d \
 -w /usr/src/app \
 --env NODE_ENV=production \
 --env PORT=8000 \
@@ -109,10 +126,10 @@ $ docker run --name web -d -p 80:8000 \
 danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
 ```
 
-### Deploy the newest version
+### Deploy the newest version to web_1
 
 ```
-$ docker exec web bash -c "\
+$ docker exec web_1 bash -c "\
 cd ../builds && \
 rm -Rf master && \
 git clone https://github.com/danjamin/portfolio-isomorphic.git master && \
@@ -123,8 +140,13 @@ rm -Rf /usr/src/app && \
 ln -s /usr/src/builds/master /usr/src/app"
 ```
 
-### Restart the container
+### Restart web_1
 
 ```
-$ docker restart web
+$ docker restart web_1
 ```
+
+### Repeat for web_2
+
+Repeat for `web_2` (replace `web_1` with `web_2`) from "Get web_1 running" to
+"Restart web_1"
