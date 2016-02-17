@@ -144,6 +144,19 @@ module.exports = function (grunt) {
         }
       },
     },
+    imagemin: {
+      prod: {
+        options: {
+          optimizationLevel: 3, // 3 = default
+        },
+        files: [{
+          expand: true,
+          cwd: prod_dest,
+          src: ['**/*.{png,jpg,gif}'],
+          dest: prod_dest
+        }]
+      }
+    },
     filerev: {
       options: {},
       prod: {
@@ -190,6 +203,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-filerev')
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-aws')
+  grunt.loadNpmTasks('grunt-contrib-imagemin')
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
@@ -225,7 +239,7 @@ module.exports = function (grunt) {
 
   // Build for production
   grunt.registerTask('production', [
-    'clean:prod', 'sass:prod', 'postcss:prod', 'rsync:prod',
+    'clean:prod', 'sass:prod', 'postcss:prod', 'rsync:prod', 'imagemin:prod',
     'browserify:vendor_prod', 'browserify:prod', 'filerev:prod', 'filerev_apply',
     'write_filerev'
   ])
