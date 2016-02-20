@@ -2,7 +2,9 @@
 
 const http = require('http')
 const zlib = require('zlib')
+const pjson = require('../../package.json')
 
+const version = pjson.version
 const host = process.env.CDN_HOST ? process.env.CDN_HOST : ''
 
 let assetMap = {}
@@ -11,7 +13,7 @@ let data
 if (host) {
   http.get({
     host: host,
-    path: '/assetMap.json',
+    path: `/assetMap-${version}.json`,
     headers: { 'accept-encoding': 'gzip' }
   }).on('response', response => {
     data = ''

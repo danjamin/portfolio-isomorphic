@@ -1,4 +1,7 @@
 {
+  "name": "portfolio-isomorphic",
+  "version": "0.0.0",
+  "private": true,
   "dependencies": {
     "body-parser": "1.14.2",
     "chart.js": "1.0.2",
