@@ -1,6 +1,6 @@
 "use strict"
 
-const config = require('./app/config')
+const config = require('./app-config')
 const _ = require('underscore')
 const fs = require('fs')
 
