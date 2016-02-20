@@ -81,7 +81,7 @@ Setup an S3 bucket then setup cloud front with the origin set to your bucket
 ### Get the container running with the correct ENV
 
 ```
-$ git checkout tags/0.1.0
+$ git checkout tags/v0.1.0
 $ docker run -d --name deploy-to-cdn -v $(pwd):/usr/src/app \
 --env CDN_HOST=foo123.cloudfront.net \
 --env S3_BUCKET=bucket \
@@ -129,7 +129,7 @@ danjamin/portfolio-isomorphic-web node --harmony_destructuring server.js
 ### Get nginx up
 
 ```
-$ git checkout tags/0.1.0
+$ git checkout tags/v0.1.0
 $ docker run --name nginx -d -p 80:80 \
 --link web_1:web_1 \
 --link web_2:web_2 \
@@ -143,14 +143,14 @@ $ docker restart nginx
 
 ```
 $ docker exec web_1 bash -c "\
-cd ../builds && \
-rm -Rf master && \
-git clone https://github.com/danjamin/portfolio-isomorphic.git 0.1.0 && \
-cd 0.1.0 && \
-git checkout tags/0.1.0 && \
+cd /usr/src/builds && \
+rm -Rf v0.1.0 && \
+git clone https://github.com/danjamin/portfolio-isomorphic.git v0.1.0 && \
+cd v0.1.0 && \
+git checkout tags/v0.1.0 && \
 npm i --production && \
 rm -Rf /usr/src/app && \
-ln -s /usr/src/builds/master /usr/src/app"
+ln -s /usr/src/builds/v0.1.0 /usr/src/app"
 ```
 
 ### Repeat for web_2
