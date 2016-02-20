@@ -3,6 +3,8 @@
 const config = require('./app-config')
 const _ = require('underscore')
 const fs = require('fs')
+const pjson = require('./package.json')
+const version = pjson.version
 
 module.exports = function (grunt) {
   // Config
@@ -16,7 +18,7 @@ module.exports = function (grunt) {
   const devDest = 'public'
   const cssDest = 'main.css'
   const vendorDest = 'vendor.js'
-  const assetMapDest = 'assetMap.json'
+  const assetMapDest = `assetMap-${version}.json`
   const browserifyVendorFilesDev = { [`${devDest}/${vendorDest}`]: external }
   const browserifyVendorFilesProd = { [`${prodDest}/${vendorDest}`]: external }
 

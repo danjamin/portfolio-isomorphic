@@ -5,5 +5,5 @@ module.exports = {
   port: process.env.PORT,
   modules: ['index', 'experience'],
   resources: [],
-  helpers:['cdn', 'json']
+  helpers:['cdn', 'json', 'version']
 }
