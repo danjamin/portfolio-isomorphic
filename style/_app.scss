@@ -120,11 +120,17 @@ footer {
   > p {
     margin: 10px 0;
 
-    > a, > a:active, > a:visited, > a:hover {
-      color: $gray;
+    > a {
+      display: inline-block;
+      margin: 10px 0;
+      white-space: nowrap;
 
       > i {
         width: 30px;
+      }
+
+      &, &:active, &:visited, &:hover {
+        color: $gray;
       }
     }
 
