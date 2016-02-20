@@ -1,44 +1,17 @@
 "use strict"
 
-var _ = require('underscore')
+const _ = require('underscore')
 
-var actionTypes = require('./actionTypes'),
-  dispatcher = require('./dispatcher'),
-  Store = require('../../../lib/Store')
+const actionTypes = require('./actionTypes')
+const dispatcher = require('./dispatcher')
+const Store = require('../../../lib/Store')
 
-var model = []
-var path = []
-
-function reset() {
-  model = []
-  path = []
-}
-
-function pathExists(entry) {
-  var dataSet
-
-  pushPath(entry)
-  dataSet = ExperienceStore.getFiltered()
-  popPath(entry)
-
-  return !!dataSet
-}
-
-function pushPath(entry) {
-  path.push(entry)
-}
-
-function popPath() {
-  if (path.length) {
-    path.splice(path.length - 1, 1)
-    return true
-  }
-  return false
-}
+let model = []
+let path = []
 
 class ExperienceStore extends Store {
   static getFiltered() {
-    var dataSet = model
+    let dataSet = model
 
     _.every(path, (entry) => {
       dataSet = _.findWhere(dataSet, {label: entry.label})
@@ -57,6 +30,33 @@ class ExperienceStore extends Store {
   static getPath() {
     return path
   }
+}
+
+function reset() {
+  model = []
+  path = []
+}
+
+function pushPath(entry) {
+  path.push(entry)
+}
+
+function popPath() {
+  if (path.length) {
+    path.splice(path.length - 1, 1)
+    return true
+  }
+  return false
+}
+
+function pathExists(entry) {
+  let dataSet
+
+  pushPath(entry)
+  dataSet = ExperienceStore.getFiltered()
+  popPath(entry)
+
+  return !!dataSet
 }
 
 ExperienceStore.dispatchToken = dispatcher.register(payload => {

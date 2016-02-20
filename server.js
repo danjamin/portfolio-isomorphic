@@ -1,39 +1,36 @@
 "use strict";
 
-var express = require('express'),
-  exphbs = require('express-handlebars'),
-  path = require('path'),
-  bodyParser = require('body-parser'),
-  app,
-  appDir = 'app'
+const express = require('express')
+const exphbs = require('express-handlebars')
+const path = require('path')
+const bodyParser = require('body-parser')
+const appDir = 'app'
 
-var {modules, apis, helpers} = require(`./${appDir}/config`)
+const app = express()
+const {modules, apis, helpers} = require(`./${appDir}/config`)
 
-function is_staging_env() {
+function isStagingEnv() {
   return process.env.NODE_ENV !== 'production'
 }
 
-function serve_path(app, relative_path) {
-  var dir = path.join(__dirname, relative_path)
+function servePath(app, relativePath) {
+  const dir = path.join(__dirname, relativePath)
   app.use(express.static(dir))
 }
 
-function setup_views(app, extension) {
-  var config, cwd, fn, helper, helper_config, i, len
-
-  helper_config = {}
+function setupViews(app, extension) {
+  const cwd = process.cwd()
+  const helperConfig = {}
 
   for (let helper of helpers) {
-    helper_config[helper] = require(`./${appDir}/helpers/${helper}`)
+    helperConfig[helper] = require(`./${appDir}/helpers/${helper}`)
   }
 
-  cwd = process.cwd()
-
-  config = exphbs({
+  const config = exphbs({
     defaultLayout: 'main',
     layoutsDir: `${cwd}/${appDir}/layouts`,
     partialsDir: `${cwd}/${appDir}/partials`,
-    helpers: helper_config,
+    helpers: helperConfig,
     extname: extension
   })
 
@@ -42,7 +39,7 @@ function setup_views(app, extension) {
   app.set('views', `${cwd}/${appDir}/modules`)
 }
 
-function bind_routes(app) {
+function bindRoutes(app) {
   // generate from config
   for (let module of modules) {
     require(`./${appDir}/modules/${module}/server`)(app)
@@ -52,7 +49,7 @@ function bind_routes(app) {
   }
 }
 
-function setup_body_parser(app) {
+function setupBodyParser(app) {
   app.use(bodyParser.urlencoded({
     extended: false
   }))
@@ -62,17 +59,15 @@ function listen(app, port) {
   app.listen(port ? port : 8000);
 }
 
-app = express()
-
 // serve robots in all environments
-serve_path(app, '/robots')
+servePath(app, '/robots')
 
 // in non-prod serve public
-if (is_staging_env()) {
-  serve_path(app, '/public')
+if (isStagingEnv()) {
+  servePath(app, '/public')
 }
 
-setup_views(app, '.hbs')
-setup_body_parser(app)
-bind_routes(app)
+setupViews(app, '.hbs')
+setupBodyParser(app)
+bindRoutes(app)
 listen(app, process.env.PORT)

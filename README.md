@@ -52,7 +52,7 @@ To generate `public/vendor.js`
 
 ```
 $ docker exec -it <web_container_id> bash
-# grunt browserify:vendor_dev
+# grunt browserify:vendor-dev
 ```
 
 ## Debugging server side web

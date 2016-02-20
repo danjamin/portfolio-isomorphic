@@ -1,17 +1,16 @@
 "use strict"
 
-var React = require('react')
+const React = require('react')
 
-var ExperiencePieChart = require('../../components/ExperiencePieChart'),
-  BreadCrumbs = require('../../components/BreadCrumbs'),
-  ExperienceStore = require('./ExperienceStore'),
-  dispatcher = require('./dispatcher'),
-  actionTypes = require('./actionTypes')
+const ExperiencePieChart = require('../../components/ExperiencePieChart')
+const BreadCrumbs = require('../../components/BreadCrumbs')
+const ExperienceStore = require('./ExperienceStore')
+const dispatcher = require('./dispatcher')
+const actionTypes = require('./actionTypes')
 
-var {div} = React.DOM
-
-var experiencePieChart = React.createFactory(ExperiencePieChart),
-  breadCrumbs = React.createFactory(BreadCrumbs)
+const {div} = React.DOM
+const experiencePieChart = React.createFactory(ExperiencePieChart)
+const breadCrumbs = React.createFactory(BreadCrumbs)
 
 function getStateFromStores() {
   return {

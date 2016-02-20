@@ -1,31 +1,26 @@
 "use strict"
 
-var config = require('./app/config')
-var _ = require('underscore')
-var fs = require('fs')
+const config = require('./app/config')
+const _ = require('underscore')
+const fs = require('fs')
 
 module.exports = function (grunt) {
   // Config
-  var external = ['react', 'react-dom', 'jquery', 'underscore'],
-    scss_src = 'style/main.scss',
-    static_src = 'static',
-    module_src = 'app/modules',
-    module_dest = 'modules',
-    prod_dest = 'dist',
-    dev_dest = 'public',
-    css_dest = 'main.css',
-    vendor_dest = 'vendor.js',
-    asset_map_dest = 'assetMap.json',
-    browserify_options_dev,
-    browserify_options_prod,
-    browserify_options_vendor_dev,
-    browserify_options_vendor_prod,
-    browserify_files_dev,
-    browserify_files_prod,
-    browserify_vendor_files_dev =  { [`${dev_dest}/${vendor_dest}`]: external },
-    browserify_vendor_files_prod = { [`${prod_dest}/${vendor_dest}`]: external }
+  const external = ['react', 'react-dom', 'jquery', 'underscore']
+  const scssSrc = 'style/main.scss'
+  const staticSrc = 'static'
+  const moduleSrc = 'app/modules'
+  const jsHintSrc = ['*.js', 'app/**/*.js', 'lib/**/*.js']
+  const moduleDest = 'modules'
+  const prodDest = 'dist'
+  const devDest = 'public'
+  const cssDest = 'main.css'
+  const vendorDest = 'vendor.js'
+  const assetMapDest = 'assetMap.json'
+  const browserifyVendorFilesDev = { [`${devDest}/${vendorDest}`]: external }
+  const browserifyVendorFilesProd = { [`${prodDest}/${vendorDest}`]: external }
 
-  browserify_options_dev =  {
+  const browserifyOptionsDev = {
     transform: [ ['babelify', {presets: ['es2015']}] ],
     watch: true,
     keepAlive: true,
@@ -41,8 +36,8 @@ module.exports = function (grunt) {
   }
 
   // extend dev options
-  browserify_options_prod = {}
-  _.extend(browserify_options_prod, browserify_options_dev, {
+  const browserifyOptionsProd = {}
+  _.extend(browserifyOptionsProd, browserifyOptionsDev, {
     watch: false,
     keepAlive: false,
     browserifyOptions: {
@@ -51,57 +46,57 @@ module.exports = function (grunt) {
     watchifyOptions: {}
   })
   // uglify prod build
-  browserify_options_prod.transform.push(['uglifyify', {global: true}])
+  browserifyOptionsProd.transform.push(['uglifyify', {global: true}])
 
   // vendor browserify options
-  browserify_options_vendor_dev = {
+  const browserifyOptionsVendorDev = {
     require: external
   }
-  browserify_options_vendor_prod = {}
-  _.extend(browserify_options_vendor_prod, browserify_options_vendor_dev, {
+  const browserifyOptionsVendorProd = {}
+  _.extend(browserifyOptionsVendorProd, browserifyOptionsVendorDev, {
     transform: [['uglifyify', {global: true}]]
   })
 
   // generate files from modules array
-  browserify_files_dev = {}
-  browserify_files_prod = {}
+  const browserifyFilesDev = {}
+  const browserifyFilesProd = {}
 
   for (let module of config.modules) {
-    browserify_files_dev[`${dev_dest}/${module_dest}/${module}.js`] =
-      browserify_files_prod[`${prod_dest}/${module_dest}/${module}.js`] =
-      [`${module_src}/${module}/client.js`]
+    browserifyFilesDev[`${devDest}/${moduleDest}/${module}.js`] =
+      browserifyFilesProd[`${prodDest}/${moduleDest}/${module}.js`] =
+      [`${moduleSrc}/${module}/client.js`]
   }
 
   // Project configuration
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     browserify: {
-      vendor_dev: {
-        files: browserify_vendor_files_dev,
-        options: browserify_options_vendor_dev
+      'vendor-dev': {
+        files: browserifyVendorFilesDev,
+        options: browserifyOptionsVendorDev
       },
-      vendor_prod: {
-        files: browserify_vendor_files_prod,
-        options: browserify_options_vendor_prod
+      'vendor-prod': {
+        files: browserifyVendorFilesProd,
+        options: browserifyOptionsVendorProd
       },
       dev: {
-        files: browserify_files_dev,
-        options: browserify_options_dev
+        files: browserifyFilesDev,
+        options: browserifyOptionsDev
       },
       prod: {
-        files: browserify_files_prod,
-        options: browserify_options_prod
+        files: browserifyFilesProd,
+        options: browserifyOptionsProd
       }
     },
     sass: {
       dev: {
         files: {
-          [`${dev_dest}/${css_dest}`]: scss_src
+          [`${devDest}/${cssDest}`]: scssSrc
         }
       },
       prod: {
         files: {
-          [`${prod_dest}/${css_dest}`]: scss_src
+          [`${prodDest}/${cssDest}`]: scssSrc
         }
       }
     },
@@ -113,13 +108,13 @@ module.exports = function (grunt) {
         ]
       },
       dev: {
-        src: `${dev_dest}/${css_dest}`,
+        src: `${devDest}/${cssDest}`,
         options: {
           map: true
         }
       },
       prod: {
-        src: `${prod_dest}/${css_dest}`,
+        src: `${prodDest}/${cssDest}`,
         options: {
           map: false
         },
@@ -133,14 +128,14 @@ module.exports = function (grunt) {
       },
       dev: {
         options: {
-          src: static_src,
-          dest: dev_dest
+          src: staticSrc,
+          dest: devDest
         }
       },
       prod: {
         options: {
-          src: static_src,
-          dest: prod_dest
+          src: staticSrc,
+          dest: prodDest
         }
       },
     },
@@ -151,16 +146,16 @@ module.exports = function (grunt) {
         },
         files: [{
           expand: true,
-          cwd: prod_dest,
+          cwd: prodDest,
           src: ['**/*.{png,jpg,gif}'],
-          dest: prod_dest
+          dest: prodDest
         }]
       }
     },
     filerev: {
       options: {},
       prod: {
-        src: `${prod_dest}/**/*.{css,js,pdf,png,ico}`,
+        src: `${prodDest}/**/*.{css,js,pdf,png,ico}`,
       },
     },
     watch: {
@@ -169,9 +164,13 @@ module.exports = function (grunt) {
         tasks: ['sass:dev', 'postcss:dev']
       },
       rsync: {
-        files: `${static_src}/**/*`,
+        files: `${staticSrc}/**/*`,
         tasks: ['rsync:dev']
       },
+      jshint: {
+        files: jsHintSrc,
+        tasks: ['jshint:dev']
+      }
     },
     s3: {
       options: {
@@ -184,13 +183,19 @@ module.exports = function (grunt) {
         }
       },
       prod: {
-        cwd: prod_dest,
+        cwd: prodDest,
         src: '**'
       },
     },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      dev: jsHintSrc
+    },
     clean: {
-      dev: [`${dev_dest}/**/*`],
-      prod: [`${prod_dest}/**/*`]
+      dev: [`${devDest}/**/*`],
+      prod: [`${prodDest}/**/*`]
     }
   })
 
@@ -204,34 +209,37 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean')
   grunt.loadNpmTasks('grunt-aws')
   grunt.loadNpmTasks('grunt-contrib-imagemin')
+  grunt.loadNpmTasks('grunt-contrib-jshint')
 
   // Default is run and watch everything BUT browserify
   grunt.registerTask('default', [
-    'sass:dev', 'postcss:dev', 'rsync:dev', 'watch'
+    'jshint:dev', 'sass:dev', 'postcss:dev', 'rsync:dev', 'watch'
   ])
 
   // TODO: break this out better
-  grunt.registerTask('write_filerev', () => {
-    var finalPaths = {}
-    var substrIndex = prod_dest.length
-    for (var orig in grunt.filerev.summary) {
-      finalPaths[orig.substring(substrIndex)] = grunt.filerev.summary[orig].substring(substrIndex)
+  grunt.registerTask('write-filerev', () => {
+    const finalPaths = {}
+    const substrIndex = prodDest.length
+    for (let orig in grunt.filerev.summary) {
+      if (grunt.filerev.summary.hasOwnProperty(orig)) {
+        finalPaths[orig.substring(substrIndex)] = grunt.filerev.summary[orig].substring(substrIndex)
+      }
     }
-    fs.writeFileSync(`${prod_dest}/${asset_map_dest}`, JSON.stringify(finalPaths))
+    fs.writeFileSync(`${prodDest}/${assetMapDest}`, JSON.stringify(finalPaths))
   })
 
   // TODO: break this better
-  grunt.registerTask('filerev_apply', () => {
-    var fs = require('fs'),
-      substrIndex = prod_dest.length,
-      cssFile = grunt.filerev.summary[`${prod_dest}/main.css`],
-      content = fs.readFileSync(cssFile, "utf8"),
-      prefix = process.env.CDN_HOST ? '//' + process.env.CDN_HOST : ''
+  grunt.registerTask('filerev-apply', () => {
+    const fs = require('fs')
+    const substrIndex = prodDest.length
+    const cssFile = grunt.filerev.summary[`${prodDest}/main.css`]
+    const prefix = process.env.CDN_HOST ? '//' + process.env.CDN_HOST : ''
+    let content = fs.readFileSync(cssFile, "utf8")
 
     content = content.replace(/url\(["']?([\w\@\.\-\/]+)["']?\)/gi, (match, p1) => {
-      var rev_file = prefix + grunt.filerev.summary[`${prod_dest}${p1}`].substring(substrIndex)
-      console.log(`Replaced ${p1} with ${rev_file}`)
-      return `url(${rev_file})`
+      const revFile = prefix + grunt.filerev.summary[`${prodDest}${p1}`].substring(substrIndex)
+      console.log(`Replaced ${p1} with ${revFile}`)
+      return `url(${revFile})`
     })
 
     fs.writeFileSync(cssFile, content)
@@ -240,7 +248,7 @@ module.exports = function (grunt) {
   // Build for production
   grunt.registerTask('production', [
     'clean:prod', 'sass:prod', 'postcss:prod', 'rsync:prod', 'imagemin:prod',
-    'browserify:vendor_prod', 'browserify:prod', 'filerev:prod', 'filerev_apply',
-    'write_filerev'
+    'browserify:vendor-prod', 'browserify:prod', 'filerev:prod', 'filerev-apply',
+    'write-filerev'
   ])
 }

@@ -1,3 +1,5 @@
+"use strict"
+
 module.exports = [
   {
     value: 6.5, label: "JavaScript",

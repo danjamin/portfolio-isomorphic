@@ -1,16 +1,18 @@
-var ReactDOMServer = require('react-dom/server'),
-  React = require('react')
+"use strict"
 
-var View = require('./View'),
-  dispatcher = require('./dispatcher'),
-  actionTypes = require('./actionTypes'),
-  chartData = require('./chartData')
+const ReactDOMServer = require('react-dom/server')
+const React = require('react')
 
-var view = React.createFactory(View)
+const View = require('./View')
+const dispatcher = require('./dispatcher')
+const actionTypes = require('./actionTypes')
+const chartData = require('./chartData')
+
+const view = React.createFactory(View)
 
 module.exports = function (app) {
   app.get('/experience', function (req, res) {
-    var html
+    let html
 
     // Notify store to receive raw model data
     dispatcher.dispatch({

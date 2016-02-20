@@ -1,30 +1,33 @@
-var http = require('http'),
-  zlib = require('zlib')
+"use strict"
 
-var assetMap = {}
-var host = process.env.CDN_HOST ? process.env.CDN_HOST : ''
+const http = require('http')
+const zlib = require('zlib')
 
-!function init() {
-  if (host) {
-    http.get({
-      host: host,
-      path: '/assetMap.json',
-      headers: { 'accept-encoding': 'gzip' }
-    }).on('response', response => {
-      var data = ''
+const host = process.env.CDN_HOST ? process.env.CDN_HOST : ''
 
-      switch (response.headers['content-encoding']) {
-        case 'gzip':
-          response = response.pipe(zlib.createGunzip())
-          break
-      }
+let assetMap = {}
+let data
 
-      response
-        .on('data', chunk => data += chunk)
-        .on('end', () => assetMap = JSON.parse(data))
-    })
-  }
-}()
+if (host) {
+  http.get({
+    host: host,
+    path: '/assetMap.json',
+    headers: { 'accept-encoding': 'gzip' }
+  }).on('response', response => {
+    data = ''
+
+    switch (response.headers['content-encoding']) {
+      case 'gzip':
+        response = response.pipe(zlib.createGunzip())
+        break
+    }
+
+    response
+      .on('data', chunk => data += chunk)
+      .on('end', () => assetMap = JSON.parse(data))
+  })
+}
+
 
 module.exports = function (path) {
   return `${host ? `//${host}` : ''}${assetMap && assetMap.hasOwnProperty(path) ? assetMap[path] : path}`

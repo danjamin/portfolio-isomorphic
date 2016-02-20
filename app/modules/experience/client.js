@@ -1,16 +1,17 @@
-var ReactDOM = require('react-dom'),
-  React = require('react'),
-  $ = require('jquery')
+"use strict"
 
-var View = require('./View'),
-  ExperienceStore = require('./ExperienceStore'),
-  dispatcher = require('./dispatcher'),
-  actionTypes = require('./actionTypes')
+const ReactDOM = require('react-dom')
+const React = require('react')
+const $ = require('jquery')
 
-var $outlet = $('#outlet')
-var model = $outlet.data('model')
+const View = require('./View')
+const dispatcher = require('./dispatcher')
+const actionTypes = require('./actionTypes')
 
-var view = React.createFactory(View)
+const $outlet = $('#outlet')
+const model = $outlet.data('model')
+
+const view = React.createFactory(View)
 
 // Notify store to receive raw model data
 dispatcher.dispatch({

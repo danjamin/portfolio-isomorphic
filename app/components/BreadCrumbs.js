@@ -1,9 +1,9 @@
 "use strict"
 
-var React = require('react'),
-  _ = require('underscore')
+const React = require('react')
+const _ = require('underscore')
 
-var {h2} = React.DOM
+const {h2} = React.DOM
 
 class BreadCrumbs extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class BreadCrumbs extends React.Component {
   }
 
   render() {
-    var labels = this.props.path.map(item => item.label)
+    let labels = this.props.path.map(item => item.label)
     labels = _.union(['Languages'], labels)
 
     return h2(

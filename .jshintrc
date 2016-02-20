@@ -1,0 +1,23 @@
+{
+  "bitwise": false,
+  "curly": true,
+  "eqeqeq": true,
+  "esversion": 6,
+  "forin": true,
+  "freeze": true,
+  "futurehostile": true,
+  "latedef": true,
+  "noarg": true,
+  "nocomma": true,
+  "nonbsp": true,
+  "singleGroups": true,
+  "strict": "global",
+  "undef": true,
+  "unused": "vars",
+  "varstmt": true,
+
+  "asi": true,
+
+  "browser": true,
+  "node": true
+}
