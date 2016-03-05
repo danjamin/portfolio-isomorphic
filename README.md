@@ -1,3 +1,5 @@
+# DEPRECATED in favor of [danjamin/portfolio-ember](http://github.com/danjamin/portfolio-ember)
+
 # portfolio-isomorphic
 
 Portfolio written in isomorphic React
