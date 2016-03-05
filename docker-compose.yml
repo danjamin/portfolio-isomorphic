@@ -11,7 +11,7 @@ nginx:
 
 web_1:
   restart: always
-  image: "danjamin/portfolio-isomorphic-web:latest"
+  build: .
   ports:
     - "8080:8080"
   volumes:
